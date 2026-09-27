@@ -304,3 +304,40 @@ def test_incident_titles_use_the_label_not_the_enum_value(settings, repository):
     for incident in result.incidents:
         if len(incident.detections) == 1:
             assert incident.attack_type.label in incident.title
+
+
+def test_json_mode_emits_one_valid_json_document(settings, repository, capsys):
+    """`--json` has to be parseable, which it was not.
+
+    It printed the summary, then appended the human incident list, so
+    `entra-analyze --json | jq` failed on trailing text. It also reported counts
+    only, so the incidents were reachable from that flag solely as prose.
+    """
+    from scripts.run_analysis import main
+
+    db = settings.database_path
+    exit_code = main(["--demo", "--json", "--db", str(db)])
+
+    assert exit_code == 0
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload["incidents"] == 3
+    assert len(payload["incident_details"]) == 3
+    assert payload["events_ingested"] == 35
+    # A key must not mean a count in one method and a list in another.
+    assert isinstance(payload["incidents"], int)
+    # The signal/proof note has to reach a machine consumer too, or the only
+    # reader who sees the caveat is a human looking at a terminal.
+    assert "not a confirmed attack" in payload["note"]
+    assert all("Impossible Travel" not in i["title"] for i in payload["incident_details"])
+
+
+def test_human_mode_still_prints_incidents(settings, repository, capsys):
+    from scripts.run_analysis import main
+
+    exit_code = main(["--demo", "--db", str(settings.database_path)])
+
+    out = capsys.readouterr().out
+    assert exit_code == 0
+    assert "3 incident(s):" in out
+    assert "not confirmed attacks" in out

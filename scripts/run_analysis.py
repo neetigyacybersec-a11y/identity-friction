@@ -137,32 +137,35 @@ def main(argv: list[str] | None = None) -> int:
         return 4
 
     if args.json:
-        print(json.dumps(result.summary(), indent=2))
-    else:
-        summary = result.summary()
-        print(f"\n{label} analysis complete in {summary['duration_seconds']}s")
-        print(
-            f"  events       {summary['events_ingested']} read, "
-            f"{summary['events_new']} new"
-        )
-        print(f"  findings     {summary['findings']}")
-        print(f"  incidents    {summary['incidents']}")
-        print(
-            f"  decisions    {summary['decisions_made']} made, "
-            f"{summary['decisions_fallback']} fell back to rules"
-        )
-        if result.degraded:
-            print("\n  stages that did not complete:")
-            for stage, reason in result.degraded.items():
-                print(f"    {stage}: {reason}")
+        # One JSON document and nothing else. Appending the human-readable
+        # incident list made `entra-analyze --json | jq` fail on trailing text,
+        # and it also meant the flag reported counts while the only place the
+        # incidents appeared was prose.
+        print(json.dumps(result.report(), indent=2))
+        return 0
+
+    summary = result.summary()
+    print(f"\n{label} analysis complete in {summary['duration_seconds']}s")
+    print(
+        f"  events       {summary['events_ingested']} read, "
+        f"{summary['events_new']} new"
+    )
+    print(f"  findings     {summary['findings']}")
+    print(f"  incidents    {summary['incidents']}")
+    print(
+        f"  decisions    {summary['decisions_made']} made, "
+        f"{summary['decisions_fallback']} fell back to rules"
+    )
+    if result.degraded:
+        print("\n  stages that did not complete:")
+        for stage, reason in result.degraded.items():
+            print(f"    {stage}: {reason}")
 
     _print_incidents(Repository(settings.database_path))
-
-    if not args.json:
-        print(
-            "\nReminder: these are detected signals from heuristics, not "
-            "confirmed attacks.\nSee docs/adr/0002-signal-not-proof.md."
-        )
+    print(
+        "\nReminder: these are detected signals from heuristics, not "
+        "confirmed attacks.\nSee docs/adr/0002-signal-not-proof.md."
+    )
     return 0
 
 

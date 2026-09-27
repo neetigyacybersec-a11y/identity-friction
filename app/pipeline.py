@@ -84,6 +84,33 @@ class PipelineResult:
             "duration_seconds": round(self.duration_seconds, 3),
         }
 
+    def report(self) -> dict[str, Any]:
+        """The whole run as one document, for a machine to consume.
+
+        `summary` alone is counts, which is not much use to a script: the
+        incidents are the result. Both are included here so `--json` is
+        self-contained rather than something a caller has to follow with a
+        database query to find out what actually happened.
+
+        The incident list is a separate key rather than an override of
+        `incidents`, so a key never means a count in one method and a list in
+        another. Anything merging the two would otherwise break on the type.
+
+        The signal/proof note travels inside the payload for the same reason it
+        appears in the CLI's human output. A caller parsing this JSON is still
+        reading someone's output, and the caveat has to reach them.
+        """
+        return {
+            **self.summary(),
+            "note": (
+                "A detected signal is not a confirmed attack. Every incident "
+                "here requires analyst review before any response action."
+            ),
+            "incident_details": [
+                incident.model_dump(mode="json") for incident in self.incidents
+            ],
+        }
+
 
 def analyze_events(
     events: list[NormalizedEvent],
