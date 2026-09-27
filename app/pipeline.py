@@ -196,8 +196,19 @@ def load_demo_events(settings: Settings | None = None) -> list[NormalizedEvent]:
 
     import json
 
+    files = sorted(directory.glob("*.json"))
+    if not files:
+        # An empty directory is just as wrong as a missing one, and is the more
+        # dangerous of the two: reporting zero findings from zero events reads
+        # as a clean result, which is the one conclusion this project must never
+        # reach without having actually looked at something.
+        raise FileNotFoundError(
+            f"no sample data files in {directory}. "
+            "Run scripts/generate_demo_data.py to create them."
+        )
+
     events: list[NormalizedEvent] = []
-    for path in sorted(directory.glob("*.json")):
+    for path in files:
         payload = json.loads(path.read_text(encoding="utf-8"))
         events.extend(
             normalize_many_strict(payload.get("events", []), DataOrigin.SYNTHETIC)

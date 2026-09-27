@@ -1,0 +1,37 @@
+# Build and run context.
+#
+# Everything the image actually needs is kept; everything a person would rather
+# not have in an image is kept out. In particular tests/ is excluded: a failing
+# test in a demo image is noise, and the suite is run on the host or in CI.
+
+.git
+.gitignore
+.github
+.venv
+venv
+__pycache__
+**/__pycache__
+*.py[cod]
+.pytest_cache
+.coverage
+htmlcov
+.mypy_cache
+.ruff_cache
+
+tests/
+docs/
+CONTEXT.md
+AGENTS.md
+.env
+.env.*
+!.env.example
+
+# The sample data is copied in explicitly, so the working tree copy of it is
+# ignored here to keep the context small.
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
+README.md
+Dockerfile
+docker-compose.yml

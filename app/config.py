@@ -158,8 +158,15 @@ class Settings(BaseSettings):
         return bool(self.openrouter_api_key)
 
     def ensure_directories(self) -> None:
+        """Create the writable directories the app needs.
+
+        Only the database's parent. The sample data directory is deliberately
+        *not* created: creating it would turn "the demo data is missing" into
+        "the demo data is empty", and an empty demo run reports zero findings,
+        which is indistinguishable from a genuinely quiet tenant. Missing sample
+        data should raise, and `load_demo_events` does exactly that.
+        """
         self.database_path.parent.mkdir(parents=True, exist_ok=True)
-        self.sample_data_dir.mkdir(parents=True, exist_ok=True)
 
 
 @lru_cache

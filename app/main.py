@@ -20,6 +20,7 @@ body, so a screenshot of the dashboard cannot imply a clean analysis.
 from __future__ import annotations
 
 import logging
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
@@ -52,13 +53,19 @@ app = FastAPI(
         "signal is not a confirmed attack."
     ),
     version="0.1.0",
+    lifespan=lambda application: _lifespan(application),
 )
 
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
-@app.on_event("startup")
-def on_startup() -> None:
+@asynccontextmanager
+async def _lifespan(application: FastAPI):
+    """Startup logging and directory setup.
+
+    A lifespan handler rather than `on_event("startup")`, which FastAPI has
+    deprecated.
+    """
     settings = get_settings()
     configure_logging(settings)
     settings.ensure_directories()
@@ -67,6 +74,7 @@ def on_startup() -> None:
         settings.mode,
         "JEV over OpenRouter" if settings.openrouter_configured else "offline rules",
     )
+    yield
 
 
 def _repository() -> Repository:

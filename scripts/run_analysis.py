@@ -15,6 +15,7 @@ import json
 import logging
 import sys
 
+from app.collect.graph import GraphCollectionError
 from app.config import (
     Settings,
     configure_logging,
@@ -123,7 +124,17 @@ def main(argv: list[str] | None = None) -> int:
     else:
         runner, label = analyze_demo, "demo"
 
-    result = runner(settings, run_investigation=args.all_investigations)
+    try:
+        result = runner(settings, run_investigation=args.all_investigations)
+    except FileNotFoundError as error:
+        # A run over no data would report zero findings, which reads as a clean
+        # tenant. That is the one conclusion this tool must not reach, so missing
+        # sample data is an error rather than an empty result.
+        print(f"cannot analyze: {error}", file=sys.stderr)
+        return 3
+    except GraphCollectionError as error:
+        print(f"Microsoft Graph collection failed: {error}", file=sys.stderr)
+        return 4
 
     if args.json:
         print(json.dumps(result.summary(), indent=2))

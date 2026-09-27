@@ -1,7 +1,16 @@
+[build-system]
+# Declared explicitly because the Dockerfile runs `pip install .`, and without
+# a build backend setuptools guesses at the layout. It would guess wrong here:
+# this repository has several top-level directories (`app`, `scripts`, `tests`,
+# `docs`) and auto-discovery refuses to guess among them.
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "entra-identity-defense"
 version = "0.1.0"
 description = "Entra ID identity attack detection and response engine (portfolio project)"
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115",
@@ -20,9 +29,36 @@ dev = [
     "pytest-cov>=5.0",
 ]
 
+[project.scripts]
+# `entra-analyze --demo` after an install, so the CLI is reachable without
+# knowing the module path.
+entra-analyze = "scripts.run_analysis:main"
+
+[tool.setuptools.packages.find]
+# Scoped discovery rather than a hand-written list. A literal list of just
+# `["app", "scripts"]` installs the two top-level packages and none of their
+# subpackages, so the installed copy raises ModuleNotFoundError on the first
+# import that reaches into app.database. Every subpackage under these two
+# prefixes ships; `tests` and `docs` deliberately do not.
+include = ["app*", "scripts*"]
+
+[tool.setuptools.package-data]
+# schema.sql and the Jinja templates are read at runtime by path, so they have
+# to travel with the package or the repository works and the installed copy
+# does not. Omitting this is a classic and very quiet packaging bug.
+app = ["database/*.sql", "templates/*.html"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+# Fail if a test needs the network. Several adapters accept an injected client
+# precisely so this is possible, and a suite that quietly reaches OpenRouter is
+# slow, non-deterministic and dependent on somebody's key.
+filterwarnings = ["error::DeprecationWarning:app.*"]
 
 [tool.coverage.run]
 source = ["app"]
+omit = [
+    "app/main.py",
+    "scripts/*",
+]
