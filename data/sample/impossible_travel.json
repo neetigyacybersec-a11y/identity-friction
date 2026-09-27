@@ -1,0 +1,90 @@
+{
+  "scenario": "impossible_travel",
+  "synthetic": true,
+  "generator": "scripts/generate_demo_data.py",
+  "variant": 0,
+  "description": "London then Singapore 90 minutes apart, about 10,900 km.",
+  "event_count": 2,
+  "events": [
+    {
+      "id": "c009a6ec-1226-57e9-b6f0-2fe6d56564d9",
+      "createdDateTime": "2026-09-20T07:15:00Z",
+      "userPrincipalName": "marcus.webb@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "marcus.webb@contoso-labs.onmicrosoft.com",
+        "displayName": "Marcus Webb",
+        "userType": "Member",
+        "id": "4c5d6e7f-3333-4c4d-9e0f-2a3b4c5d6e7f"
+      },
+      "ipAddress": "81.2.69.160",
+      "location": {
+        "latitude": 51.5074,
+        "longitude": -0.1278,
+        "city": "London",
+        "countryOrRegion": "GB"
+      },
+      "deviceDetail": {
+        "displayName": "Corporate Laptop",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "9b472941-6345-5e38-8037-c61a64a84cd6",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "c0e74f4b-bef7-5763-b108-c1524dbcda19",
+      "createdDateTime": "2026-09-20T08:45:00Z",
+      "userPrincipalName": "marcus.webb@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "marcus.webb@contoso-labs.onmicrosoft.com",
+        "displayName": "Marcus Webb",
+        "userType": "Member",
+        "id": "4c5d6e7f-3333-4c4d-9e0f-2a3b4c5d6e7f"
+      },
+      "ipAddress": "116.86.44.201",
+      "location": {
+        "latitude": 1.3521,
+        "longitude": 103.8198,
+        "city": "Singapore",
+        "countryOrRegion": "SG"
+      },
+      "deviceDetail": {
+        "displayName": "Unknown",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "86fd839b-40f0-5aac-a039-d2ac953bcf01",
+      "riskLevelDuringSignIn": "none"
+    }
+  ]
+}

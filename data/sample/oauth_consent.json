@@ -1,0 +1,86 @@
+{
+  "scenario": "oauth_consent",
+  "synthetic": true,
+  "generator": "scripts/generate_demo_data.py",
+  "variant": 0,
+  "description": "Consent grant for an unfamiliar app with mail and file write scopes, minutes after an MFA fatigue success.",
+  "event_count": 2,
+  "events": [
+    {
+      "id": "c0423ce7-1341-5e6b-8ece-a367773b3b78",
+      "activityDateTime": "2026-09-20T10:07:00Z",
+      "activityDisplayName": "Consent to application",
+      "category": "ApplicationManagement",
+      "activityResult": "Success",
+      "result": "Success",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+          "displayName": "Daniel Reyes",
+          "userType": "Member",
+          "id": "7b2d4e5f-2222-4b3c-8d9e-1f2a3b4c5d6e"
+        },
+        "application": null
+      },
+      "targetResources": [
+        {
+          "type": "Service Principal",
+          "displayName": "Contoso Productivity Helper",
+          "addedProperties": [
+            {
+              "name": "ConsentAction",
+              "value": "AllPrincipals"
+            },
+            {
+              "name": "Permission",
+              "value": "Mail.Read"
+            },
+            {
+              "name": "Permission",
+              "value": "Mail.ReadWrite"
+            },
+            {
+              "name": "Permission",
+              "value": "Files.ReadWrite.All"
+            },
+            {
+              "name": "Permission",
+              "value": "offline_access"
+            }
+          ]
+        }
+      ],
+      "resultType": "Other"
+    },
+    {
+      "id": "76ecd4c4-27fc-5f7c-98aa-dd8c963fc7c1",
+      "activityDateTime": "2026-09-20T10:08:00Z",
+      "activityDisplayName": "Add service principal",
+      "category": "ApplicationManagement",
+      "activityResult": "Success",
+      "result": "Success",
+      "initiatedBy": {
+        "user": {
+          "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+          "displayName": "Daniel Reyes",
+          "userType": "Member",
+          "id": "7b2d4e5f-2222-4b3c-8d9e-1f2a3b4c5d6e"
+        },
+        "application": null
+      },
+      "targetResources": [
+        {
+          "type": "Service Principal",
+          "displayName": "Contoso Productivity Helper",
+          "addedProperties": [
+            {
+              "name": "ConsentAction",
+              "value": "AllPrincipals"
+            }
+          ]
+        }
+      ],
+      "resultType": "Other"
+    }
+  ]
+}

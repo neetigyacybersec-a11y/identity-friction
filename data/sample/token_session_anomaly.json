@@ -1,0 +1,170 @@
+{
+  "scenario": "token_session_anomaly",
+  "synthetic": true,
+  "generator": "scripts/generate_demo_data.py",
+  "variant": 0,
+  "description": "Optional: repeated graph API use from a new country. A signal, not proof of token theft.",
+  "event_count": 4,
+  "events": [
+    {
+      "id": "7a7ad00d-3de7-56de-9554-6dfcf031d4de",
+      "createdDateTime": "2026-09-20T14:00:00Z",
+      "userPrincipalName": "nina.petrov@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "nina.petrov@contoso-labs.onmicrosoft.com",
+        "displayName": "Nina Petrov",
+        "userType": "Member",
+        "id": "9d296a6a-75fd-5590-8c9a-cd0e40e43541"
+      },
+      "ipAddress": "45.147.230.9",
+      "location": {
+        "latitude": 55.7558,
+        "longitude": 37.6173,
+        "city": "Moscow",
+        "countryOrRegion": "RU"
+      },
+      "deviceDetail": {
+        "displayName": "Unknown",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Graph Explorer",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "593d1557-71b2-545d-a74f-21469955024d",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "4b037375-7097-57c6-835e-e702adabd4f8",
+      "createdDateTime": "2026-09-20T14:03:00Z",
+      "userPrincipalName": "nina.petrov@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "nina.petrov@contoso-labs.onmicrosoft.com",
+        "displayName": "Nina Petrov",
+        "userType": "Member",
+        "id": "9d296a6a-75fd-5590-8c9a-cd0e40e43541"
+      },
+      "ipAddress": "45.147.230.9",
+      "location": {
+        "latitude": 55.7558,
+        "longitude": 37.6173,
+        "city": "Moscow",
+        "countryOrRegion": "RU"
+      },
+      "deviceDetail": {
+        "displayName": "Unknown",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Graph Explorer",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "9ad937ae-9b72-5770-9d80-565de779bb48",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "c56c1893-6020-53a7-b7d3-dd8cdd95a57c",
+      "createdDateTime": "2026-09-20T14:06:00Z",
+      "userPrincipalName": "nina.petrov@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "nina.petrov@contoso-labs.onmicrosoft.com",
+        "displayName": "Nina Petrov",
+        "userType": "Member",
+        "id": "9d296a6a-75fd-5590-8c9a-cd0e40e43541"
+      },
+      "ipAddress": "45.147.230.9",
+      "location": {
+        "latitude": 55.7558,
+        "longitude": 37.6173,
+        "city": "Moscow",
+        "countryOrRegion": "RU"
+      },
+      "deviceDetail": {
+        "displayName": "Unknown",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Graph Explorer",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "7ced5e93-0dfa-58b8-9fd2-6a675e601366",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "0bdf05b8-7276-5ac0-986d-b8fd22c06c3c",
+      "createdDateTime": "2026-09-20T14:09:00Z",
+      "userPrincipalName": "nina.petrov@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "nina.petrov@contoso-labs.onmicrosoft.com",
+        "displayName": "Nina Petrov",
+        "userType": "Member",
+        "id": "9d296a6a-75fd-5590-8c9a-cd0e40e43541"
+      },
+      "ipAddress": "45.147.230.9",
+      "location": {
+        "latitude": 55.7558,
+        "longitude": 37.6173,
+        "city": "Moscow",
+        "countryOrRegion": "RU"
+      },
+      "deviceDetail": {
+        "displayName": "Unknown",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Graph Explorer",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "2bcec813-f943-5730-975c-3c2cba991dc5",
+      "riskLevelDuringSignIn": "none"
+    }
+  ]
+}

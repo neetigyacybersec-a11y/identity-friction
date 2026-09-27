@@ -1,0 +1,290 @@
+{
+  "scenario": "benign_login",
+  "synthetic": true,
+  "generator": "scripts/generate_demo_data.py",
+  "variant": 0,
+  "description": "A normal working morning from the corporate egress. No detector should fire.",
+  "event_count": 7,
+  "events": [
+    {
+      "id": "a8727008-6f57-57d2-8997-8a3c5bcb7526",
+      "createdDateTime": "2026-09-20T08:00:00Z",
+      "userPrincipalName": "priya.raman@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "priya.raman@contoso-labs.onmicrosoft.com",
+        "displayName": "Priya Raman",
+        "userType": "Member",
+        "id": "c347c93a-1ea2-5a52-bf2a-a92ad3da4e53"
+      },
+      "ipAddress": "192.0.2.15",
+      "location": {
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "city": "Berlin",
+        "countryOrRegion": "DE"
+      },
+      "deviceDetail": {
+        "displayName": "Corporate Laptop",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "35f1699a-0205-5e88-86a8-0e7f1bd6b26a",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "8636a97b-baf1-5dd9-8656-6133718849f8",
+      "createdDateTime": "2026-09-20T08:07:00Z",
+      "userPrincipalName": "tom.becker@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "tom.becker@contoso-labs.onmicrosoft.com",
+        "displayName": "Tom Becker",
+        "userType": "Member",
+        "id": "40fd545a-6b16-5447-af9a-27f22ab10e3c"
+      },
+      "ipAddress": "192.0.2.15",
+      "location": {
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "city": "Berlin",
+        "countryOrRegion": "DE"
+      },
+      "deviceDetail": {
+        "displayName": "Corporate Laptop",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "fc5ebd15-63c2-5e09-b29b-f8f439ae7be3",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "1f237299-a2b8-5bde-992f-d8d883be2121",
+      "createdDateTime": "2026-09-20T08:14:00Z",
+      "userPrincipalName": "nina.petrov@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "nina.petrov@contoso-labs.onmicrosoft.com",
+        "displayName": "Nina Petrov",
+        "userType": "Member",
+        "id": "9d296a6a-75fd-5590-8c9a-cd0e40e43541"
+      },
+      "ipAddress": "192.0.2.15",
+      "location": {
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "city": "Berlin",
+        "countryOrRegion": "DE"
+      },
+      "deviceDetail": {
+        "displayName": "Corporate Laptop",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "79b6271f-ff57-523c-89ad-a75521366728",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "9ee0df9e-0b70-5efd-9627-6b91b4393a43",
+      "createdDateTime": "2026-09-20T08:21:00Z",
+      "userPrincipalName": "omar.haddad@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "omar.haddad@contoso-labs.onmicrosoft.com",
+        "displayName": "Omar Haddad",
+        "userType": "Member",
+        "id": "29a437cd-0838-5309-aebb-5cba74e4ac62"
+      },
+      "ipAddress": "192.0.2.15",
+      "location": {
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "city": "Berlin",
+        "countryOrRegion": "DE"
+      },
+      "deviceDetail": {
+        "displayName": "Corporate Laptop",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "9b7c52bc-da3c-5af3-8678-921a55e8a14a",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "a3d711d6-b5b1-571f-85f0-df25ee2e7367",
+      "createdDateTime": "2026-09-20T08:28:00Z",
+      "userPrincipalName": "grace.liu@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "grace.liu@contoso-labs.onmicrosoft.com",
+        "displayName": "Grace Liu",
+        "userType": "Member",
+        "id": "c7b09761-1de4-5bfe-a243-f64da26018fb"
+      },
+      "ipAddress": "192.0.2.15",
+      "location": {
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "city": "Berlin",
+        "countryOrRegion": "DE"
+      },
+      "deviceDetail": {
+        "displayName": "Corporate Laptop",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "fbc7a211-68dd-5c3c-833f-72f045f59908",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "1342679b-f0a8-5dc2-9725-6e0f8b909268",
+      "createdDateTime": "2026-09-20T08:35:00Z",
+      "userPrincipalName": "felix.brandt@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "felix.brandt@contoso-labs.onmicrosoft.com",
+        "displayName": "Felix Brandt",
+        "userType": "Member",
+        "id": "652081bf-03de-52a7-9449-9d18565e1189"
+      },
+      "ipAddress": "192.0.2.15",
+      "location": {
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "city": "Berlin",
+        "countryOrRegion": "DE"
+      },
+      "deviceDetail": {
+        "displayName": "Corporate Laptop",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "a8cee8e1-4acb-5970-a3c4-54fdf14c7e37",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "655b3e6c-1db5-5566-9751-ae841754d4b3",
+      "createdDateTime": "2026-09-20T09:30:00Z",
+      "userPrincipalName": "priya.raman@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "priya.raman@contoso-labs.onmicrosoft.com",
+        "displayName": "Priya Raman",
+        "userType": "Member",
+        "id": "c347c93a-1ea2-5a52-bf2a-a92ad3da4e53"
+      },
+      "ipAddress": "198.51.100.9",
+      "location": {
+        "latitude": 47.6062,
+        "longitude": -122.3321,
+        "city": "Seattle",
+        "countryOrRegion": "US"
+      },
+      "deviceDetail": {
+        "displayName": "Corporate Laptop",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "authenticationMethod": "password",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "c374dd26-b079-5789-94ae-a28d1222aecc",
+      "riskLevelDuringSignIn": "none"
+    }
+  ]
+}

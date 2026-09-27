@@ -1,0 +1,233 @@
+{
+  "scenario": "mfa_fatigue",
+  "synthetic": true,
+  "generator": "scripts/generate_demo_data.py",
+  "variant": 0,
+  "description": "4 MFA denials for one user in 6 minutes, then an accepted push.",
+  "event_count": 5,
+  "events": [
+    {
+      "id": "320d1c62-9371-5985-87b3-765cda8afd1d",
+      "createdDateTime": "2026-09-20T10:01:00Z",
+      "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+        "displayName": "Daniel Reyes",
+        "userType": "Member",
+        "id": "7b2d4e5f-2222-4b3c-8d9e-1f2a3b4c5d6e"
+      },
+      "ipAddress": "198.51.100.42",
+      "location": {
+        "latitude": 1.3521,
+        "longitude": 103.8198,
+        "city": "Singapore",
+        "countryOrRegion": "SG"
+      },
+      "deviceDetail": {
+        "displayName": "Personal Android Phone",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 53001,
+        "failureReason": "MFA denied"
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "succeeded": true
+        },
+        {
+          "authenticationMethodType": "MicrosoftAuthenticatorPush",
+          "succeeded": false,
+          "failureReason": "UserDeclined"
+        }
+      ],
+      "correlationId": "e24fa1be-55e7-5954-9fbf-4ce04813ab3c",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "37568941-eef1-56b0-9244-2c585dd135fa",
+      "createdDateTime": "2026-09-20T10:02:00Z",
+      "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+        "displayName": "Daniel Reyes",
+        "userType": "Member",
+        "id": "7b2d4e5f-2222-4b3c-8d9e-1f2a3b4c5d6e"
+      },
+      "ipAddress": "198.51.100.42",
+      "location": {
+        "latitude": 1.3521,
+        "longitude": 103.8198,
+        "city": "Singapore",
+        "countryOrRegion": "SG"
+      },
+      "deviceDetail": {
+        "displayName": "Personal Android Phone",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 53002,
+        "failureReason": "MFA denied"
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "succeeded": true
+        },
+        {
+          "authenticationMethodType": "MicrosoftAuthenticatorPush",
+          "succeeded": false,
+          "failureReason": "UserDeclined"
+        }
+      ],
+      "correlationId": "0578c380-407b-583a-9a25-560d2d2e4f09",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "dd0cc720-9404-5212-9adb-8bb9ea0e6472",
+      "createdDateTime": "2026-09-20T10:03:00Z",
+      "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+        "displayName": "Daniel Reyes",
+        "userType": "Member",
+        "id": "7b2d4e5f-2222-4b3c-8d9e-1f2a3b4c5d6e"
+      },
+      "ipAddress": "198.51.100.42",
+      "location": {
+        "latitude": 1.3521,
+        "longitude": 103.8198,
+        "city": "Singapore",
+        "countryOrRegion": "SG"
+      },
+      "deviceDetail": {
+        "displayName": "Personal Android Phone",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 53009,
+        "failureReason": "MFA denied"
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "succeeded": true
+        },
+        {
+          "authenticationMethodType": "MicrosoftAuthenticatorPush",
+          "succeeded": false,
+          "failureReason": "UserDeclined"
+        }
+      ],
+      "correlationId": "29014712-1481-555a-be62-83294e80b7d6",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "2404367b-c980-5ad5-b36f-ff5970cde449",
+      "createdDateTime": "2026-09-20T10:05:00Z",
+      "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+        "displayName": "Daniel Reyes",
+        "userType": "Member",
+        "id": "7b2d4e5f-2222-4b3c-8d9e-1f2a3b4c5d6e"
+      },
+      "ipAddress": "198.51.100.42",
+      "location": {
+        "latitude": 1.3521,
+        "longitude": 103.8198,
+        "city": "Singapore",
+        "countryOrRegion": "SG"
+      },
+      "deviceDetail": {
+        "displayName": "Personal Android Phone",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 50076,
+        "failureReason": "MFA denied"
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "succeeded": true
+        },
+        {
+          "authenticationMethodType": "MicrosoftAuthenticatorPush",
+          "succeeded": false,
+          "failureReason": "UserDeclined"
+        }
+      ],
+      "correlationId": "292a5df3-a623-5b13-ac4b-2a20e00cec85",
+      "riskLevelDuringSignIn": "none"
+    },
+    {
+      "id": "22dcab6f-b314-5681-bbb2-b766dc3b50e4",
+      "createdDateTime": "2026-09-20T10:06:00Z",
+      "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+      "user": {
+        "userPrincipalName": "daniel.reyes@contoso-labs.onmicrosoft.com",
+        "displayName": "Daniel Reyes",
+        "userType": "Member",
+        "id": "7b2d4e5f-2222-4b3c-8d9e-1f2a3b4c5d6e"
+      },
+      "ipAddress": "198.51.100.42",
+      "location": {
+        "latitude": 1.3521,
+        "longitude": 103.8198,
+        "city": "Singapore",
+        "countryOrRegion": "SG"
+      },
+      "deviceDetail": {
+        "displayName": "Personal Android Phone",
+        "operatingSystem": "Windows 11",
+        "isCompliant": true
+      },
+      "appDisplayName": "Microsoft Office 365 Portal",
+      "isInteractive": true,
+      "isNonInteractive": false,
+      "status": {
+        "errorCode": 0
+      },
+      "conditionalAccessStatus": "success",
+      "appliedConditionalAccessPolicies": [],
+      "authenticationDetails": [
+        {
+          "authenticationMethodType": "Password",
+          "succeeded": true
+        },
+        {
+          "authenticationMethodType": "MicrosoftAuthenticatorPush",
+          "succeeded": true
+        }
+      ],
+      "correlationId": "d5884466-b1bc-564e-95f7-acc96b3b2cd2",
+      "riskLevelDuringSignIn": "none"
+    }
+  ]
+}
