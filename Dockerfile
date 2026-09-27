@@ -17,17 +17,20 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # Dependencies are installed from the project metadata in their own layer, so a
-# source change does not invalidate the installed packages.
+# source change does not invalidate the installed packages. app/ and scripts/ are
+# both copied first: pyproject declares the `entra-analyze` console script, and
+# copying scripts/ after the install would leave that entry point pointing at a
+# module that was not in the distribution.
 COPY pyproject.toml README.md ./
 COPY app ./app
+COPY scripts ./scripts
 RUN pip install --no-cache-dir .
 
 # The dashboard and CLI both need the sample data and somewhere writable to put
-# the database.
+# the database. The database lives in the volume below, so the image only needs
+# the sample data.
 COPY data ./data
-COPY scripts ./scripts
-RUN mkdir -p /app/data && \
-    useradd --create-home --uid 1000 appuser && \
+RUN useradd --create-home --uid 1000 appuser && \
     chown -R appuser:appuser /app
 
 USER appuser

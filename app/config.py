@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 from pydantic import BeforeValidator, Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -23,8 +23,13 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 def _split_comma_list(value: Any) -> Any:
     """Accept `a,b,c` as well as `["a","b","c"]` for list settings.
 
-    pydantic-settings JSON-decodes a complex field only when it comes from an
-    environment variable, and rejects a plain comma-separated string by default.
+    `NoDecode` is the essential half of this. Without it pydantic-settings
+    JSON-decodes a complex field while reading the environment and raises
+    SettingsError on a plain comma-separated string, before any validator on the
+    field gets a chance to run. That failure is specific to values arriving from
+    the environment, so a test passing the same value as a keyword argument would
+    pass while a real `.env` file stayed broken.
+
     Comma-separated is what a .env file invites someone to write, and OAuth
     activity names contain spaces. Both forms are parsed here so the value means
     the same thing whether it arrives from the environment, from a .env file or
@@ -51,8 +56,8 @@ def _split_comma_ints(value: Any) -> Any:
     return parts
 
 
-StringList = Annotated[list[str], BeforeValidator(_split_comma_list)]
-IntList = Annotated[list[int], BeforeValidator(_split_comma_ints)]
+StringList = Annotated[list[str], NoDecode, BeforeValidator(_split_comma_list)]
+IntList = Annotated[list[int], NoDecode, BeforeValidator(_split_comma_ints)]
 
 
 class Settings(BaseSettings):

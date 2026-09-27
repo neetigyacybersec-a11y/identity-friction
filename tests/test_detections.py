@@ -31,6 +31,36 @@ def only(events, settings: Settings, name: DetectionName):
     return [r for r in results if r.detection is name]
 
 
+# -- naming ------------------------------------------------------------------
+
+
+def test_attack_type_labels_do_not_claim_more_than_the_telemetry_supports():
+    """The wording a person reads is part of the signal/proof boundary.
+
+    `impossible_travel` asserts something about a person's physical movements,
+    which sign-in telemetry cannot support. It has to be presented as an
+    observation of anomalous authentication instead.
+
+    This broke once, because the incident title was derived from the enum value
+    by string surgery, so it is worth pinning down rather than assuming.
+    """
+    assert AttackType.IMPOSSIBLE_TRAVEL.value == "impossible_travel"
+    assert AttackType.IMPOSSIBLE_TRAVEL.label == (
+        "Geographically anomalous authentication"
+    )
+
+    for attack_type in AttackType:
+        label = attack_type.label
+        assert label and label == label.strip()
+        # A multi-word machine identifier must never be laundered into wording by
+        # replacing underscores and capitalising, which is what put the forbidden
+        # phrase in front of users.
+        assert "_" not in label
+        if "_" in attack_type.value:
+            naive = attack_type.value.replace("_", " ").title()
+            assert label != naive, f"{attack_type.value} label is just the enum, reworded"
+
+
 # -- the clean case ---------------------------------------------------------
 
 

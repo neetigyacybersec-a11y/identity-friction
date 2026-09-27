@@ -313,7 +313,7 @@ class CorrelationEngine:
     ) -> str:
         detections = sorted({finding.detection.value for finding in group})
         if len(detections) == 1:
-            return f"{attack_type.value.replace('_', ' ').title()} detected for {subject}"
+            return f"{attack_type.label} detected for {subject}"
         return f"Identity attack chain for {subject}: {', '.join(detections)}"
 
     @staticmethod

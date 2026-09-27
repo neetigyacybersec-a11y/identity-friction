@@ -12,7 +12,7 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 
-from app.config import Settings
+from app.config import PROJECT_ROOT, Settings
 from app.decision.engine import DecisionUnavailable
 from app.models.decision import AttackType
 from app.pipeline import analyze_demo, analyze_events, load_demo_events
@@ -48,6 +48,61 @@ def test_list_settings_accept_comma_separated_values():
 def test_list_settings_also_accept_json():
     settings = Settings(oauth_suspicious_activities='["Consent to application"]')
     assert settings.oauth_suspicious_activities == ["Consent to application"]
+
+
+def test_list_settings_accept_comma_separated_environment_variables(monkeypatch):
+    """The same values, arriving the way a .env file actually delivers them.
+
+    pydantic-settings JSON-decodes a complex field while reading the
+    environment, and that happens *before* a field validator runs, so a
+    comma-separated value used to raise SettingsError here even though the
+    identical value passed as a keyword argument. Testing the keyword form alone
+    is what let that ship. `NoDecode` is the fix; this test is the guard.
+    """
+    monkeypatch.setenv("OAUTH_SUSPICIOUS_ACTIVITIES", "Consent to application,Add member to role")
+    monkeypatch.setenv("OAUTH_SENSITIVE_SCOPES", "Mail.Read,Files.ReadWrite.All")
+    monkeypatch.setenv("MFA_DENIAL_ERROR_CODES", "53001, 53002")
+    monkeypatch.setenv("MFA_METHOD_TYPES", "Phone,SoftwareOath")
+
+    settings = Settings()
+
+    assert settings.oauth_suspicious_activities == [
+        "Consent to application",
+        "Add member to role",
+    ]
+    assert settings.oauth_sensitive_scopes == ["Mail.Read", "Files.ReadWrite.All"]
+    assert settings.mfa_denial_error_codes == [53001, 53002]
+    assert settings.mfa_method_types == ["Phone", "SoftwareOath"]
+
+
+def test_list_settings_accept_json_environment_variables(monkeypatch):
+    monkeypatch.setenv("OAUTH_SENSITIVE_SCOPES", '["Mail.Read","Files.ReadWrite.All"]')
+    assert Settings().oauth_sensitive_scopes == ["Mail.Read", "Files.ReadWrite.All"]
+
+
+def test_every_value_in_env_example_parses(monkeypatch, tmp_path):
+    """`.env.example` is documentation people copy, so it must actually work.
+
+    Every list-valued variable in the shipped example is replayed into the
+    environment, because a file that looks right and fails on load is worse than
+    no file.
+    """
+    for line in (PROJECT_ROOT / ".env.example").read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        if value:
+            monkeypatch.setenv(key.strip(), value)
+
+    settings = Settings()
+
+    assert settings.oauth_suspicious_activities
+    assert settings.oauth_sensitive_scopes
+    assert settings.mfa_denial_error_codes
+    # Unset secrets stay empty, so demo mode is the default rather than a
+    # half-configured live mode that would try and fail to reach a tenant.
+    assert settings.graph_configured is False
 
 
 # -- the demo pipeline ------------------------------------------------------
@@ -229,3 +284,23 @@ def test_both_dashboard_pages_render_with_the_boundary_notice(
         assert response.status_code == 200
         assert "Detected signal, not confirmed attack" in response.text
         assert "{{" not in response.text, "an unrendered Jinja tag reached the page"
+
+
+def test_incident_titles_use_the_label_not_the_enum_value(settings, repository):
+    """A person reading the dashboard must never be told a person moved impossibly.
+
+    The incident title reaches the API, the dashboard and the CLI, so this
+    checks the end of the chain rather than the enum in isolation.
+    """
+    result = analyze_demo(settings, repository=repository)
+    titles = [incident.title for incident in result.incidents]
+
+    assert any("Geographically anomalous authentication" in title for title in titles)
+    assert not any("Impossible Travel" in title for title in titles)
+
+    # A single-detection incident names itself with the label. A chain may still
+    # list rule identifiers, because an analyst correlating two rules wants the
+    # stable names, so the wording check above is the one that matters.
+    for incident in result.incidents:
+        if len(incident.detections) == 1:
+            assert incident.attack_type.label in incident.title

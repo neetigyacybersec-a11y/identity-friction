@@ -32,6 +32,11 @@ data/*.db
 data/*.sqlite
 data/*.sqlite3
 
-README.md
+# README.md is deliberately absent from this list. pyproject.toml declares it as
+# the distribution's long description, so pip needs it during the install, and
+# excluding it here made `COPY pyproject.toml README.md ./` fail with a missing
+# file. Dockerfile, docker-compose.yml and .dockerignore stay out: they are not
+# part of the image.
 Dockerfile
 docker-compose.yml
+.dockerignore

@@ -23,13 +23,33 @@ services:
       # survive `docker compose down`.
       - app-data:/app/data
 
+  # Live collection against a real tenant. This service is behind a profile, so
+  # `docker compose up` on its own cannot reach a tenant and has to be asked to
+  # explicitly.
+  #
+  #   cp .env.example .env    # fill in the three GRAPH_* values and an OpenRouter key
+  #   docker compose --profile live up
+  #
+  # It gets its own volume, and its own port, because sharing app-data with the
+  # demo service would mix synthetic events into a real tenant's database. The
+  # two stores stay separate so neither can contaminate the other.
+  live:
+    build: .
+    image: entra-identity-defense
+    container_name: entra-identity-defense-live
+    profiles:
+      - live
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+    environment:
+      MODE: live
+      DATABASE_PATH: /app/data/entra_defense.db
+      LOG_LEVEL: INFO
+    volumes:
+      - app-live-data:/app/data
+
 volumes:
   app-data:
-
-# Live collection against a real tenant:
-#
-#   cp .env.example .env    # then fill in the three graph values and an OpenRouter key
-#   docker compose --profile live up
-#
-# Keeping this behind a profile means the default path cannot reach a tenant.
-# See docs/adr/0002-signal-not-proof.md before pointing this at anything real.
+  app-live-data:

@@ -32,6 +32,30 @@ class AttackType(str, Enum):
     ACCOUNT_COMPROMISE = "account_compromise"
     UNKNOWN = "unknown"
 
+    @property
+    def label(self) -> str:
+        """The wording a person reads.
+
+        The value is a stable machine identifier and stays that way. The label is
+        the name the project is allowed to use in front of an analyst, and for
+        `impossible_travel` it is deliberately not the obvious one: "impossible
+        travel" states a conclusion about a person's physical movements, which
+        the telemetry cannot support. "Geographically anomalous authentication"
+        names what was actually observed.
+
+        Deriving this from the value with `.replace("_", " ").title()` is what put
+        the forbidden wording in front of users, so the mapping is explicit.
+        """
+        return {
+            AttackType.BENIGN: "Benign",
+            AttackType.PASSWORD_SPRAY: "Password spray",
+            AttackType.MFA_FATIGUE: "MFA fatigue",
+            AttackType.IMPOSSIBLE_TRAVEL: "Geographically anomalous authentication",
+            AttackType.OAUTH_ABUSE: "Suspicious OAuth consent",
+            AttackType.ACCOUNT_COMPROMISE: "Account compromise",
+            AttackType.UNKNOWN: "Unclassified",
+        }[self]
+
 
 class ConfidenceBand(str, Enum):
     """Confidence mapped onto behaviour, following TypeSafe's documented
