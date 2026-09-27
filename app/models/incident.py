@@ -42,6 +42,14 @@ class DetectionResult(BaseModel):
     suggested_attack_type: AttackType = AttackType.UNKNOWN
     base_severity: int = Field(default=3, ge=1, le=10)
 
+    # Identity of the underlying signal, not of this particular finding.
+    # A sliding window will see the same spray cluster from several start
+    # times, so detectors set a key here and the engine collapses the
+    # duplicates. Two findings that describe the same activity are one
+    # activity, and an incident list with five copies of one finding is
+    # useless to an analyst.
+    dedupe_key: str | None = None
+
 
 class IncidentStatus(str, Enum):
     OPEN = "open"

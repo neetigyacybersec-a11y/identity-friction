@@ -264,6 +264,12 @@ def build_benign_logins(rng: random.Random) -> list[dict]:
 
     # One user legitimately in Seattle, so the geography in this dataset is not
     # uniform. Otherwise every dataset would look identical in the dashboard.
+    #
+    # The gap is fourteen hours, not ninety minutes. Berlin to Seattle is about
+    # 8,700 km, so a short hop implies roughly 5,800 km/h and the impossible
+    # travel detector fires on a completely legitimate business trip. This is
+    # the false-positive case, and the right fix is for the data to be realistic
+    # rather than for the threshold to be loosened until nothing trips.
     traveler = {
         "userPrincipalName": f"priya.raman@{TENANT}",
         "displayName": "Priya Raman",
@@ -272,7 +278,7 @@ def build_benign_logins(rng: random.Random) -> list[dict]:
     }
     events.append(
         sign_in(
-            at=BASE_DAY.replace(hour=9, minute=30),
+            at=BASE_DAY.replace(hour=22, minute=15),
             user=traveler,
             ip="198.51.100.9",
             location=SEATTLE,
