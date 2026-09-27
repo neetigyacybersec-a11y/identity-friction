@@ -52,6 +52,10 @@ CREATE TABLE IF NOT EXISTS incidents (
     source_ip      TEXT,
     application    TEXT,
     data_origin    TEXT    NOT NULL,
+    -- What the incident is about, decided in app/correlation.py. Kept alongside
+    -- the raw fields because a spray is about a source and an MFA burst is
+    -- about an account, and user_key alone cannot say which.
+    subject        TEXT,
 
     first_seen     TEXT    NOT NULL,
     last_seen      TEXT    NOT NULL,

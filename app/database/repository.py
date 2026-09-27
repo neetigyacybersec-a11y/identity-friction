@@ -183,10 +183,10 @@ class Repository:
                     """
                     INSERT INTO incidents (
                         incident_uid, attack_type, status, severity,
-                        user_key, source_ip, application, data_origin,
+                        user_key, source_ip, application, data_origin, subject,
                         first_seen, last_seen, event_count,
                         title, signal_json, limitations
-                    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                     """,
                     (
                         incident.incident_id,
@@ -197,6 +197,7 @@ class Repository:
                         incident.source_ip,
                         incident.application,
                         incident.data_origin.value,
+                        incident.subject,
                         incident.first_seen.isoformat(),
                         incident.last_seen.isoformat(),
                         incident.event_count,

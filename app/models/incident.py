@@ -84,6 +84,13 @@ class Incident(BaseModel):
     application: str | None = None
     data_origin: DataOrigin = DataOrigin.SYNTHETIC
 
+    # What the incident is *about*, in words an analyst would use. A spray is
+    # about a source, an MFA fatigue burst is about an account, and `user_key`
+    # alone cannot express that difference: on a spray it is just whichever
+    # victim the correlation picked. Computed once in app/correlation.py so the
+    # title, the incident id and the decision reasoning cannot drift apart.
+    subject: str | None = None
+
     first_seen: datetime
     last_seen: datetime
     event_count: int = 0
@@ -96,3 +103,14 @@ class Incident(BaseModel):
     timeline: list[TimelineEntry] = Field(default_factory=list)
     decision: Decision | None = None
     investigation: dict[str, Any] | None = None
+
+
+def describe(incident: Incident) -> str:
+    """How to refer to an incident in one phrase.
+
+    Prefers the subject decided during correlation and falls back to the raw
+    fields for an incident built by hand in a test.
+    """
+    if incident.subject:
+        return incident.subject
+    return incident.user_key or incident.source_ip or "an unidentified source"

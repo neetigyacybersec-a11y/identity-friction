@@ -212,6 +212,7 @@ class CorrelationEngine:
             source_ip=source_ip,
             application=application,
             data_origin=data_origin,
+            subject=subject,
             first_seen=timeline_events[0].timestamp,
             last_seen=timeline_events[-1].timestamp,
             event_count=len(timeline_events),
