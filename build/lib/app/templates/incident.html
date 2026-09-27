@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Incident {{ incident.incident_uid }} &middot; Entra ID Identity Defense</title>
+  <style>
+    :root {
+      --bg: #0f1117; --panel: #171a23; --border: #262b38; --text: #e6e8ee;
+      --muted: #9aa3b5; --accent: #5b9dff; --low: #4a9e6f;
+      --medium: #c99a2e; --high: #d05a5a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font-family: -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6;
+    }
+    header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); }
+    main { padding: 1.5rem 2rem; max-width: 1000px; }
+    h1 { margin: 0 0 .3rem; font-size: 1.35rem; }
+    h2 { font-size: 1.05rem; margin: 2rem 0 .75rem; color: var(--muted);
+         text-transform: uppercase; letter-spacing: .05em; font-weight: 500; }
+    a { color: var(--accent); text-decoration: none; }
+    .sub { color: var(--muted); font-size: .9rem; }
+    .sev { display: inline-block; padding: .1rem .5rem; border-radius: 4px;
+           font-weight: 600; min-width: 2.5rem; text-align: center; }
+    .sev-1, .sev-2, .sev-3 { background: #1e3a2c; color: var(--low); }
+    .sev-4, .sev-5, .sev-6 { background: #3a3018; color: var(--medium); }
+    .sev-7, .sev-8, .sev-9, .sev-10 { background: #3a1e1e; color: var(--high); }
+    .badge { display: inline-block; padding: .1rem .5rem; border-radius: 4px;
+             font-size: .75rem; background: #232838; color: var(--muted); }
+    .banner { background: #2a2416; border: 1px solid var(--medium); color: #f0d9a0;
+              padding: .75rem 1rem; border-radius: 6px; margin: 1.5rem 0; font-size: .9rem; }
+    .panel { background: var(--panel); border: 1px solid var(--border);
+             border-radius: 8px; padding: 1.1rem 1.3rem; margin-bottom: 1rem; }
+    /* The timeline is the product: denied, denied, accepted, consent. */
+    .timeline { list-style: none; padding: 0; margin: 0; }
+    .timeline li { position: relative; padding: .5rem 0 .5rem 1.6rem; border-left: 2px solid var(--border); }
+    .timeline li::before {
+      content: ''; position: absolute; left: -6px; top: 1.1rem;
+      width: 10px; height: 10px; border-radius: 50%; background: var(--muted);
+    }
+    .timeline li.ok::before { background: var(--low); }
+    .timeline li.fail::before { background: var(--high); }
+    .ts { color: var(--muted); font-size: .8rem; font-family: ui-monospace, monospace; }
+    .ev { font-weight: 500; }
+    .dt { color: var(--muted); font-size: .85rem; }
+    ul.plain { margin: .4rem 0; padding-left: 1.2rem; }
+    ul.plain li { margin: .25rem 0; }
+    button {
+      background: var(--accent); color: #0b1220; border: 0; border-radius: 6px;
+      padding: .5rem 1rem; font-weight: 600; cursor: pointer; font-size: .9rem;
+    }
+    button:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+    code { background: #232838; padding: .1rem .35rem; border-radius: 3px; font-size: .85em; }
+    .kv { display: grid; grid-template-columns: 140px 1fr; gap: .3rem 1rem; font-size: .9rem; }
+    .kv dt { color: var(--muted); }
+    .kv dd { margin: 0; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="sub"><a href="/">&larr; All incidents</a></div>
+  <h1>{{ incident.title }}</h1>
+  <div class="sub">
+    <span class="sev sev-{{ incident.severity }}">{{ incident.severity }}</span>
+    <span class="badge">{{ incident.attack_type }}</span>
+    <span class="badge">{{ incident.status }}</span>
+    <span class="badge">{{ incident.data_origin }}</span>
+    <code>{{ incident.incident_uid }}</code>
+  </div>
+</header>
+
+<main>
+  <div class="banner">
+    <strong>Detected signal, not confirmed attack.</strong> The events below
+    matched a heuristic. This is not proof of a malicious action and no response
+    has been taken.
+  </div>
+
+  {% if incident.decision_error %}
+  <div class="banner">
+    <strong>Model layer unavailable.</strong> The decision below was made by the
+    offline rule engine because the model-backed layer failed:
+    <code>{{ incident.decision_error }}</code>
+  </div>
+  {% endif %}
+
+  <div class="panel">
+    <h2 style="margin-top:0">Incident</h2>
+    <dl class="kv">
+      <dt>Subject</dt><dd>{{ incident.subject or 'unknown' }}</dd>
+      <dt>User</dt><dd>{{ incident.user_key or 'n/a' }}</dd>
+      <dt>Source IP</dt><dd>{{ incident.source_ip or 'n/a' }}</dd>
+      <dt>Application</dt><dd>{{ incident.application or 'n/a' }}</dd>
+      <dt>Events</dt><dd>{{ incident.event_count }}</dd>
+      <dt>First seen</dt><dd>{{ incident.first_seen }}</dd>
+      <dt>Last seen</dt><dd>{{ incident.last_seen }}</dd>
+      <dt>Detections</dt>
+      <dd>{% for d in incident.signal_summary.get('detections', []) %}<span class="badge">{{ d }}</span> {% endfor %}</dd>
+    </dl>
+  </div>
+
+  <h2>Timeline</h2>
+  <ul class="timeline">
+    {% for entry in incident.timeline %}
+    <li class="{% if entry.outcome == 'success' %}ok{% else %}fail{% endif %}">
+      <div class="ts">{{ entry.timestamp[:19] }}</div>
+      <div class="ev">
+        {{ entry.activity if entry.raw_event_type == 'audit_log'
+           else ('Sign-in succeeded' if entry.outcome == 'success' else 'Sign-in failed') }}
+      </div>
+      <div class="dt">
+        {{ entry.application or 'sign-in' }}
+        {% if entry.city %}&middot; {{ entry.city }}, {{ entry.country }}{% endif %}
+        {% if entry.status_error_code %}&middot; code {{ entry.status_error_code }}{% endif %}
+        {% if entry.source_ip %}&middot; {{ entry.source_ip }}{% endif %}
+        &middot; via {{ entry.detection }}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if incident.decision %}
+  <h2>Decision</h2>
+  <div class="panel">
+    <dl class="kv">
+      <dt>Suspicious</dt><dd>{{ incident.decision.suspicious }}</dd>
+      <dt>Attack type</dt><dd>{{ incident.decision.attack_type }}</dd>
+      <dt>Severity</dt><dd>{{ incident.decision.severity }}</dd>
+      <dt>Escalate</dt><dd>{{ incident.decision.escalate }}</dd>
+      <dt>Confidence</dt>
+      <dd>{{ incident.decision.confidence }} <span class="badge">{{ incident.decision.band }}</span></dd>
+      <dt>Decided by</dt><dd>{{ incident.decision.source }}</dd>
+    </dl>
+    <p class="sub">{{ incident.decision.reasoning }}</p>
+  </div>
+  {% endif %}
+
+  <h2>Investigation</h2>
+  {% if incident.decision and incident.decision.investigation %}
+  <div class="panel">
+    <p>{{ incident.decision.investigation.summary }}</p>
+
+    <h2 style="margin-top:1.2rem">Evidence</h2>
+    <ul class="plain">
+      {% for item in incident.decision.investigation.evidence %}<li>{{ item }}</li>{% endfor %}
+    </ul>
+
+    <h2>Hypothesis</h2>
+    <p class="sub">{{ incident.decision.investigation.attack_hypothesis }}</p>
+
+    {% if incident.decision.investigation.mitre_techniques %}
+    <h2>MITRE ATT&amp;CK</h2>
+    <ul class="plain">
+      {% for t in incident.decision.investigation.mitre_techniques %}<li>{{ t }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <h2>Investigation steps</h2>
+    <ul class="plain">
+      {% for step in incident.decision.investigation.investigation_steps %}<li>{{ step }}</li>{% endfor %}
+    </ul>
+
+    <h2>Recommended actions</h2>
+    <ul class="plain">
+      {% for action in incident.decision.investigation.recommended_actions %}<li>{{ action }}</li>{% endfor %}
+    </ul>
+
+    <h2>Limitations</h2>
+    <ul class="plain">
+      {% for limit in incident.decision.investigation.limitations %}<li class="sub">{{ limit }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% else %}
+  <div class="panel">
+    <p class="sub">No investigation report yet.</p>
+    <button id="run" onclick="run()">Generate investigation report</button>
+    <pre id="out" class="sub" style="white-space:pre-wrap"></pre>
+  </div>
+  {% endif %}
+
+  {% if incident.limitations %}
+  <h2>What this evidence cannot show</h2>
+  <div class="panel">
+    <ul class="plain">
+      {% for limit in incident.limitations.split('. ') %}
+        {% if limit %}<li class="sub">{{ limit }}.</li>{% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</main>
+
+<script>
+async function run() {
+  const button = document.getElementById('run');
+  const out = document.getElementById('out');
+  button.disabled = true;
+  out.textContent = 'Generating... this calls a model and can take a minute.';
+  try {
+    const response = await fetch('/api/incidents/{{ incident.incident_uid }}/investigate', {method: 'POST'});
+    const body = await response.json();
+    if (!response.ok) {
+      out.textContent = body.detail || 'Request failed.';
+    } else {
+      out.textContent = 'Report generated. Reload the page to read it.';
+      setTimeout(() => location.reload(), 900);
+    }
+  } catch (error) {
+    out.textContent = 'Request failed: ' + error;
+  }
+  button.disabled = false;
+}
+</script>
+</body>
+</html>

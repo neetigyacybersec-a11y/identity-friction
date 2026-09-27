@@ -1,0 +1,2 @@
+[console_scripts]
+entra-analyze = scripts.run_analysis:main

@@ -1,3 +1,21 @@
+Metadata-Version: 2.4
+Name: entra-identity-defense
+Version: 0.1.0
+Summary: Entra ID identity attack detection and response engine (portfolio project)
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.115
+Requires-Dist: uvicorn[standard]>=0.30
+Requires-Dist: jinja2>=3.1
+Requires-Dist: pydantic>=2.7
+Requires-Dist: pydantic-settings>=2.3
+Requires-Dist: httpx>=0.27
+Requires-Dist: azure-identity>=1.17
+Requires-Dist: python-dotenv>=1.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: pytest-cov>=5.0; extra == "dev"
+
 # Entra ID Identity Defense
 
 Detects identity attack signals in Microsoft Entra ID telemetry, groups them into
@@ -113,12 +131,6 @@ also stored with every incident and shown on the dashboard.
 - **The live path is unverified against a real tenant.** There were no tenant
   credentials available while building this, so Graph collection is tested
   against an injected fake client, not against Microsoft Graph.
-- **The Docker image has never been built.** Neither Docker nor Podman was
-  available in the environment this was written in. The Dockerfile is checked by
-  hand — every `COPY` source exists and is kept out of `.dockerignore`, the
-  package installs cleanly into a fresh venv, and the ASGI app serves from
-  `site-packages` — but an unbuilt image is an unverified claim, and the demo
-  path is the one that has actually been run.
 
 ## Live mode
 
