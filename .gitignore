@@ -1,0 +1,28 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets — never commit these
+.env
+*.pem
+*.key
+
+# Local database
+*.db
+*.sqlite3
+data/live/
+
+# Firecrawl scratch output
+.firecrawl/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
