@@ -8,14 +8,51 @@ scattered through detector code.
 
 from __future__ import annotations
 
+import json
 import os
 from functools import lru_cache
 from pathlib import Path
+from typing import Annotated, Any
 
-from pydantic import Field
+from pydantic import BeforeValidator, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _split_comma_list(value: Any) -> Any:
+    """Accept `a,b,c` as well as `["a","b","c"]` for list settings.
+
+    pydantic-settings JSON-decodes a complex field only when it comes from an
+    environment variable, and rejects a plain comma-separated string by default.
+    Comma-separated is what a .env file invites someone to write, and OAuth
+    activity names contain spaces. Both forms are parsed here so the value means
+    the same thing whether it arrives from the environment, from a .env file or
+    from a test.
+    """
+    if not isinstance(value, str):
+        return value
+    text = value.strip()
+    if not text:
+        return []
+    if text.startswith("["):
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            # A bracket that is not valid JSON is treated as ordinary text.
+            pass
+    return [part.strip() for part in text.split(",") if part.strip()]
+
+
+def _split_comma_ints(value: Any) -> Any:
+    parts = _split_comma_list(value)
+    if isinstance(parts, list):
+        return [int(part) for part in parts]
+    return parts
+
+
+StringList = Annotated[list[str], BeforeValidator(_split_comma_list)]
+IntList = Annotated[list[int], BeforeValidator(_split_comma_ints)]
 
 
 class Settings(BaseSettings):
@@ -62,7 +99,7 @@ class Settings(BaseSettings):
     impossible_travel_lookback_hours: int = 24
     impossible_travel_min_distance_km: float = 200.0
 
-    oauth_suspicious_activities: list[str] = Field(
+    oauth_suspicious_activities: StringList = Field(
         default_factory=lambda: [
             "Consent to application",
             "Add delegated permission grant",
@@ -71,7 +108,7 @@ class Settings(BaseSettings):
             "Add scoped member to role",
         ]
     )
-    oauth_sensitive_scopes: list[str] = Field(
+    oauth_sensitive_scopes: StringList = Field(
         default_factory=lambda: [
             "Mail.Read",
             "Mail.ReadWrite",
@@ -88,11 +125,11 @@ class Settings(BaseSettings):
     # because they are external facts, not project decisions, and because they
     # are worth checking against your own tenant's logs.
     # Source: Microsoft "Microsoft Entra sign-in logs" error code table.
-    mfa_denial_error_codes: list[int] = Field(
+    mfa_denial_error_codes: IntList = Field(
         default_factory=lambda: [53001, 53002, 53009, 53012]
     )
-    invalid_credentials_error_codes: list[int] = Field(default_factory=lambda: [50126])
-    mfa_method_types: list[str] = Field(
+    invalid_credentials_error_codes: IntList = Field(default_factory=lambda: [50126])
+    mfa_method_types: StringList = Field(
         default_factory=lambda: [
             "Phone",
             "MicrosoftAuthenticatorPush",

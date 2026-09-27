@@ -42,19 +42,20 @@ class PasswordSprayDetection(Detection):
     ) -> list[DetectionResult]:
         settings: Settings = context.settings
         invalid_codes = settings.invalid_credentials_error_codes
-        denial_codes = settings.mfa_denial_error_codes
 
-        # Only credential rejections count. A second-factor failure is a
-        # different attack and belongs to the MFA fatigue rule.
-        candidates = [
+        # Only credential rejections define the spray. A second-factor failure
+        # is a different attack and belongs to the MFA fatigue rule.
+        failures = [
             event for event in events if is_invalid_credentials(event, invalid_codes)
         ]
-        if not candidates:
+        if not failures:
             return [self.not_fired()]
+
+        successes_by_ip = _successes_by_ip(events)
 
         findings: list[DetectionResult] = []
         for start, end, window_events in sliding_windows(
-            candidates, minutes=settings.spray_window_minutes
+            failures, minutes=settings.spray_window_minutes
         ):
             stats = window_stats(window_events, start, end)
 
@@ -66,18 +67,29 @@ class PasswordSprayDetection(Detection):
             # One finding per source IP inside the window, so a busy attacker
             # does not produce a separate finding for every user they touched.
             for source_ip in sorted(stats.by_ip):
-                ip_events = [e for e in window_events if e.source_ip == source_ip]
-                if not ip_events:
+                ip_failures = [e for e in window_events if e.source_ip == source_ip]
+                if not ip_failures:
                     continue
 
                 # Did the spray get in anywhere? A success from the spray's own
-                # source turns "noisy" into "a foothold exists".
-                successes = [e for e in ip_events if e.is_success]
+                # source inside the same window turns "noisy" into "a foothold
+                # exists", and is what justifies calling this a compromise
+                # rather than a spray.
+                #
+                # The successes are looked up in the full event list rather than
+                # in the window, because a success is not a credential rejection
+                # and so was never in the window to begin with. Both are reported
+                # because the success is evidence for the same incident.
+                successes = [
+                    event
+                    for event in successes_by_ip.get(source_ip, [])
+                    if start <= event.timestamp <= end
+                ]
+                evidence_events = [*ip_failures, *successes]
                 succeeded = bool(successes)
-                affected_users = sorted({e.user_key for e in ip_events if e.user_key})
-                failed_accounts = sorted(
-                    {e.user_key for e in ip_events if e.is_failure and e.user_key}
-                )
+                affected_users = sorted({e.user_key for e in evidence_events if e.user_key})
+                failed_accounts = sorted({e.user_key for e in ip_failures if e.user_key})
+                succeeded_accounts = sorted({e.user_key for e in successes if e.user_key})
 
                 findings.append(
                     DetectionResult(
@@ -85,14 +97,15 @@ class PasswordSprayDetection(Detection):
                         fired=True,
                         title=(
                             f"Password spray from {source_ip}: "
-                            f"{len(ip_events)} failures against {len(affected_users)} accounts"
+                            f"{len(ip_failures)} failures against {len(affected_users)} accounts"
                         ),
                         finding=(
-                            f"Source {source_ip} produced {len(failed_accounts)} failed "
+                            f"Source {source_ip} produced {len(ip_failures)} failed "
                             f"sign-ins across {len(affected_users)} distinct accounts in "
                             f"{settings.spray_window_minutes} minutes. "
                             + (
-                                f"At least one sign-in from this source succeeded."
+                                f"A sign-in from this source succeeded for "
+                                f"{', '.join(succeeded_accounts)} in the same window."
                                 if succeeded
                                 else "No sign-in from this source succeeded."
                             )
@@ -104,17 +117,18 @@ class PasswordSprayDetection(Detection):
                             "accounts_failed": len(failed_accounts),
                             "accounts_targeted": affected_users,
                             "successful_sign_ins_from_source": len(successes),
+                            "accounts_succeeded": succeeded_accounts,
                         },
                         evidence={
-                            "failed_sign_ins": len(ip_events),
+                            "failed_sign_ins": len(ip_failures),
                             "failure_threshold": settings.spray_failed_login_threshold,
                             "unique_users": len(affected_users),
                             "unique_user_threshold": settings.spray_unique_user_threshold,
                             "window_minutes": settings.spray_window_minutes,
                         },
                         limitations=self.limitations,
-                        event_ids=[e.event_id for e in ip_events],
-                        events=ip_events,
+                        event_ids=[e.event_id for e in evidence_events],
+                        events=evidence_events,
                         suggested_attack_type=(
                             AttackType.ACCOUNT_COMPROMISE
                             if succeeded
@@ -131,3 +145,16 @@ class PasswordSprayDetection(Detection):
         if not findings:
             return [self.not_fired()]
         return findings
+
+
+def _successes_by_ip(events: list[NormalizedEvent]) -> dict[str, list[NormalizedEvent]]:
+    """Successful sign-ins grouped by source IP.
+
+    Grouped once up front because the sliding-window loop runs many times over
+    the same list, and a linear scan per window would be wasteful.
+    """
+    grouped: dict[str, list[NormalizedEvent]] = {}
+    for event in events:
+        if event.is_success and event.source_ip:
+            grouped.setdefault(event.source_ip, []).append(event)
+    return grouped
