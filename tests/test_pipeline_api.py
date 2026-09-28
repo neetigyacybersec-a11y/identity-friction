@@ -368,3 +368,108 @@ def test_dashboard_button_redirects_without_following(client, settings, reposito
 
     assert response.status_code == 303
     assert response.headers["location"] == "/"
+
+
+# -- the live path -----------------------------------------------------------
+#
+# analyze_live had no coverage at all, which is a strange gap in a project whose
+# whole argument is that the interesting dependency's failure must not be silent.
+# The function that exists to handle a partial collection had never been run.
+
+
+class _StubCollector:
+    def __init__(self, result):
+        self._result = result
+
+    def collect(self):
+        if isinstance(self._result, Exception):
+            raise self._result
+        return self._result
+
+
+def _collection(events, *, errors=()):
+    """A CollectionResult with the same shape the real collector returns.
+
+    `complete` is a derived property over `errors`, not a field, so a gap has to
+    be expressed as an error string. That is the point: coverage is a
+    consequence of what failed, not a separate flag someone can set.
+    """
+    from app.collect.graph import CollectionResult
+
+    return CollectionResult(
+        events=events,
+        sign_in_count=len(events),
+        audit_count=0,
+        errors=list(errors),
+    )
+
+
+def test_live_analysis_still_reports_what_arrived_when_collection_is_partial(
+    settings, repository, events_from, monkeypatch
+):
+    """Partial telemetry is worth analysing, provided the gap is visible.
+
+    A tenant without the directory audit licence returns 403 for one log type.
+    The sign-in half is still worth running, so the events that did arrive are
+    analysed and the failure is recorded in `degraded`. Silently returning the
+    half that worked would read as a complete run.
+    """
+    from app.collect import graph as graph_module
+    from app.pipeline import analyze_live
+
+    events = events_from["password_spray"]
+    monkeypatch.setattr(
+        graph_module,
+        "GraphCollector",
+        lambda _settings: _StubCollector(
+            _collection(events, errors=["directoryAudits: 403 forbidden"])
+        ),
+    )
+
+    result = analyze_live(settings, repository=repository)
+
+    assert result.events_ingested == len(events)
+    assert result.findings >= 1, "events that arrived must still be detected"
+    assert "collection" in result.degraded
+    assert "403" in result.degraded["collection"]
+    assert result.complete is False
+
+
+def test_live_analysis_raises_rather_than_reporting_a_quiet_tenant(
+    settings, repository, monkeypatch
+):
+    """No credentials must be an error, not a clean result.
+
+    Zero incidents because nothing was collected is indistinguishable from zero
+    incidents because nothing happened. That ambiguity is the failure mode this
+    project is built to refuse.
+    """
+    from app.collect import graph as graph_module
+    from app.collect.graph import GraphCollectionError
+    from app.pipeline import analyze_live
+
+    monkeypatch.setattr(
+        graph_module,
+        "GraphCollector",
+        lambda _settings: _StubCollector(
+            GraphCollectionError("graph is not configured: missing GRAPH_TENANT_ID")
+        ),
+    )
+
+    with pytest.raises(GraphCollectionError):
+        analyze_live(settings, repository=repository)
+
+
+def test_live_analysis_on_a_healthy_tenant_is_complete(settings, repository, monkeypatch):
+    """The boring case still has to work, and must not be marked degraded."""
+    from app.collect import graph as graph_module
+    from app.pipeline import analyze_live
+
+    monkeypatch.setattr(
+        graph_module, "GraphCollector", lambda _settings: _StubCollector(_collection([]))
+    )
+
+    result = analyze_live(settings, repository=repository)
+
+    assert result.degraded == {}
+    assert result.complete is True
