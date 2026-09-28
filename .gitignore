@@ -37,3 +37,9 @@ data/live/
 .vscode/
 .idea/
 .DS_Store
+
+# Agent working docs. README.md is the project's public face and stays tracked;
+# these are the local agent and decision trail, not documentation for a reader
+# arriving at the repository.
+*.md
+!README.md
