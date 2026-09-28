@@ -1,8 +1,8 @@
 [build-system]
-# Declared explicitly because the Dockerfile runs `pip install .`, and without
-# a build backend setuptools guesses at the layout. It would guess wrong here:
-# this repository has several top-level directories (`app`, `scripts`, `tests`,
-# `docs`) and auto-discovery refuses to guess among them.
+# Declared explicitly because the documented install path is `pip install -e .`,
+# and without a build backend setuptools guesses at the layout. It would guess
+# wrong here: this repository has several top-level directories (`app`,
+# `scripts`, `tests`, `docs`) and auto-discovery refuses to guess among them.
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 

@@ -61,8 +61,9 @@ opinion; they never gate the result.
 
 ## Quick start
 
-Requires **Python 3.11 or newer**. No Microsoft tenant, no API keys, no cloud
-account, no Docker. The demo data ships with the repo.
+Requires **Python 3.11 or newer**. Nothing else. No Microsoft tenant, no API
+keys, no cloud account, no container runtime. The demo data ships with the
+repo.
 
 ```bash
 git clone https://github.com/neetigyacybersec-a11y/identity-friction.git
@@ -135,22 +136,6 @@ detector's own limitations. There is a JSON API underneath:
 ```bash
 curl -s localhost:8000/api/incidents?min_severity=8 | python3 -m json.tool
 ```
-
-### Docker
-
-```bash
-docker compose up          # then open http://localhost:8000
-```
-
-The image is Python 3.12, installs runtime dependencies only, and runs as a
-non-root user with a health check against `/api/health`. Live mode sits behind an
-explicit `docker compose --profile live up` on its own port and its own database
-volume, so the default path cannot reach a tenant and demo data can never mix
-into a real one.
-
-> **Not verified:** Docker was not available in the environment this was built
-> in, so the image has never actually been built. Everything else in this
-> document has been run.
 
 ### Scripting
 
