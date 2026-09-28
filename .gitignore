@@ -3,6 +3,17 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .ruff_cache/
+.coverage
+htmlcov/
+
+# Build artifacts. setuptools writes a full second copy of the source tree into
+# build/ and a metadata directory beside pyproject.toml on every `pip install .`,
+# so tracking them duplicates the codebase in the history and guarantees it
+# drifts from the real sources.
+build/
+dist/
+*.egg-info/
+.eggs/
 
 # Virtual environments
 .venv/
