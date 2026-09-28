@@ -6,8 +6,8 @@
 services:
   app:
     build: .
-    image: entra-identity-defense
-    container_name: entra-identity-defense
+    image: identity-friction
+    container_name: identity-friction
     ports:
       - "8000:8000"
     environment:
@@ -35,8 +35,8 @@ services:
   # two stores stay separate so neither can contaminate the other.
   live:
     build: .
-    image: entra-identity-defense
-    container_name: entra-identity-defense-live
+    image: identity-friction
+    container_name: identity-friction-live
     profiles:
       - live
     ports:

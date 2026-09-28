@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Entra ID Identity Defense</title>
+  <title>Identity Friction &middot; Entra ID signal triage</title>
   <style>
     :root {
       --bg: #0f1117; --panel: #171a23; --border: #262b38; --text: #e6e8ee;
@@ -48,12 +48,20 @@
       font-size: .75rem; background: #232838; color: var(--muted);
     }
     .empty { color: var(--muted); padding: 2rem 0; }
+    button {
+      background: var(--accent); color: #0b1020; border: 0; cursor: pointer;
+      padding: .6rem 1.1rem; border-radius: 6px; font-size: .95rem;
+      font-weight: 600; font-family: inherit;
+    }
+    button:hover { filter: brightness(1.1); }
+    button:active { transform: translateY(1px); }
     code { background: #232838; padding: .1rem .35rem; border-radius: 3px; font-size: .85em; }
   </style>
 </head>
 <body>
 <header>
-  <h1>Entra ID Identity Defense</h1>
+  <h1>Identity Friction</h1>
+  <div class="sub">Signal triage for Microsoft Entra ID telemetry.</div>
   <div class="sub">
     Mode <code>{{ settings.mode }}</code> &middot;
     decisions by
@@ -114,8 +122,18 @@
   </table>
   {% else %}
   <div class="empty">
-    No incidents yet. Run <code>python -m scripts.run_analysis --demo</code>
-    or POST to <code>/api/analyze/demo</code>.
+    <p><strong>No incidents yet.</strong></p>
+    <p>
+      Load the bundled synthetic dataset to see the detectors run. Nothing is
+      sent anywhere, and no credentials are needed.
+    </p>
+    <form method="post" action="/analyze/demo" style="margin:1rem 0">
+      <button type="submit">Analyze demo data</button>
+    </form>
+    <p class="sub">
+      Or from a terminal:
+      <code>python -m scripts.run_analysis --demo</code>
+    </p>
   </div>
   {% endif %}
 </main>

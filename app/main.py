@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app.config import (
@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 
 app = FastAPI(
-    title="Entra ID Identity Defense",
+    title="Identity Friction",
     description=(
         "Deterministic identity attack detection over Microsoft Entra ID "
         "telemetry, with model-backed decisions and investigation. A detected "
@@ -264,6 +264,18 @@ def run_demo_analysis(
     """
     result = analyze_demo(get_settings(), run_investigation=run_investigation)
     return {**result.summary(), **_degradation_note(result)}
+
+
+@app.post("/analyze/demo")
+def run_demo_from_dashboard() -> RedirectResponse:
+    """Run the demo analysis from the dashboard's own button, then go back.
+
+    This exists so the browser path does not have to POST to a JSON endpoint and
+    land the reader on a wall of raw JSON. The API route above is for scripts;
+    this one is for whoever just opened localhost:8000 and found it empty.
+    """
+    analyze_demo(get_settings(), run_investigation=False)
+    return RedirectResponse(url="/", status_code=303)
 
 
 @app.post("/api/analyze/live")

@@ -341,3 +341,30 @@ def test_human_mode_still_prints_incidents(settings, repository, capsys):
     assert exit_code == 0
     assert "3 incident(s):" in out
     assert "not confirmed attacks" in out
+
+
+def test_dashboard_offers_a_working_demo_button(client, settings, repository):
+    """The first-run path has to be clickable, not a curl command.
+
+    Someone opening localhost:8000 on a fresh clone finds an empty dashboard.
+    Telling them to POST to a JSON endpoint means telling the reader to do
+    something a recruiter never does, so the empty state carries a real button
+    that runs the analysis and returns them to the page.
+    """
+    assert "Analyze demo data" in client.get("/").text
+    assert "No incidents yet" in client.get("/").text
+
+    response = client.post("/analyze/demo", follow_redirects=True)
+
+    # 303 so the browser does not resubmit the form on a refresh.
+    assert response.status_code == 200
+    assert response.request.url.path == "/"
+    assert "No incidents yet" not in response.text
+    assert 'class="incident"' in response.text
+
+
+def test_dashboard_button_redirects_without_following(client, settings, repository):
+    response = client.post("/analyze/demo", follow_redirects=False)
+
+    assert response.status_code == 303
+    assert response.headers["location"] == "/"

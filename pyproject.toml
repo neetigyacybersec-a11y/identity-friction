@@ -7,9 +7,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "entra-identity-defense"
+name = "identity-friction"
 version = "0.1.0"
-description = "Entra ID identity attack detection and response engine (portfolio project)"
+description = "Signal triage for Microsoft Entra ID telemetry. Deterministic detections, model-assisted review, analyst decides."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

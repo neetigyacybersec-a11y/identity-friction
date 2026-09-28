@@ -1,6 +1,6 @@
 # CONTEXT
 
-Entra ID Identity Attack Detection & Response Engine.
+Identity Friction — signal triage for Microsoft Entra ID telemetry.
 
 A defensive identity-security platform. It ingests Microsoft Entra ID authentication and audit
 telemetry, finds identity attack patterns with deterministic rules, asks JEV (System One) for a
