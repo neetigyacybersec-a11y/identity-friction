@@ -23,7 +23,6 @@ Deterministic detections, model-assisted review, analyst decides.
 >
 > That distinction is the project's central claim, and it is enforced in the
 > detectors, the API responses, the CLI output and the JSON payload.
-> See [ADR 0002](docs/adr/0002-signal-not-proof.md).
 
 ---
 
@@ -196,7 +195,6 @@ with every incident and shown on its dashboard page.
   call. That means **no schema guarantee and no calibrated confidence**. The
   adapter parses defensively, treats the model's self-reported confidence as
   advisory, and derives the confidence band from the returned score instead.
-  See [ADR 0001](docs/adr/0001-jev-behind-decision-engine-interface.md).
 - **The model is told not to over-claim, and told about the detector's
   limitations** — those caveats are prepended to every report, so a model reply
   cannot quietly drop them.
@@ -248,14 +246,17 @@ The pattern running through all of them: the interesting work is the *boundary*.
 Which boundary is defensible, what a name is allowed to claim, and what happens
 when the interesting dependency is unavailable.
 
-- **[ADR 0001](docs/adr/0001-jev-behind-decision-engine-interface.md)** — JEV
-  behind a `DecisionEngine` interface, reached over OpenRouter
-- **[ADR 0002](docs/adr/0002-signal-not-proof.md)** — a detected signal is not a
-  confirmed attack
-- **[ADR 0003](docs/adr/0003-raw-sqlite-over-sqlalchemy.md)** — raw `sqlite3`
-  over an ORM
-- **[CONTEXT.md](CONTEXT.md)** — the glossary, and the line between signal and
-  proof
+Three decisions are worth arguing about, and each one is defended in the code
+that depends on it:
+
+- **JEV behind a `DecisionEngine` interface, reached over OpenRouter.** The
+  model is swappable because the fallback had to be written first. The rule
+  engine is not a stub; it is the thing that runs when the model is absent.
+- **A detected signal is not a confirmed attack.** Enforced in the detectors,
+  the API responses, the CLI output and the JSON payload, not just in prose.
+- **Raw `sqlite3` over an ORM.** Four tables and a closed vocabulary do not
+  justify a migration framework. `app/database/schema.sql` is the whole
+  schema, and it is readable in one sitting.
 
 ---
 
@@ -263,7 +264,7 @@ when the interesting dependency is unavailable.
 
 ```bash
 pip install -e ".[dev]"
-python -m pytest            # 68 tests, no network, no credentials
+python -m pytest            # 71 tests, no network, no credentials
 ```
 
 The suite covers the failure modes, not only the happy path: no API key, a
@@ -299,8 +300,7 @@ app/
   pipeline.py          the one order of operations
   main.py              FastAPI + dashboard
 data/sample/           synthetic scenarios, in Graph's own JSON shape
-docs/adr/              the decisions worth arguing about
-tests/                 68 tests, no network required
+tests/                 71 tests, no network required
 ```
 
 The demo data is written in Microsoft Graph's exact JSON shape on purpose, so a
